@@ -131,12 +131,15 @@ def drawBoundary():
             frame.forward(0.05 * FS)
     frame.end_fill()
 
-def drawFood():
-    food = snake.clone()
-    food.shapesize(0.7)
-    food.color(FOOD_COLOR)
-    food.up()
-    food.goto(rd.randint(-VPS, VPS), rd.randint(-VPS, VPS))
+# Function to call key bindings
+def keyBindings():
+    win.listen()
+    win.onkeypress(goUp, 'Up')
+    win.onkeypress(goDown, 'Down')
+    win.onkeypress(goRight, 'Right')
+    win.onkeypress(goLeft, 'Left')
+    win.onkeypress(fast, '+')
+    win.onkeypress(slow, '-')
 
 # To display scores
 def scoreboard(score, high_score):
@@ -229,16 +232,14 @@ if __name__ == '__main__':
     snake_body = []  # To grow as food is consumed
 
     # Set up food
-    drawFood()
+    food = snake.clone()
+    food.shapesize(0.7)
+    food.color(FOOD_COLOR)
+    food.up()
+    food.goto(rd.randint(-VPS, VPS), rd.randint(-VPS, VPS))
 
     # Keyboard controls for the snake
-    win.listen()
-    win.onkeypress(goUp, 'Up')
-    win.onkeypress(goDown, 'Down')
-    win.onkeypress(goRight, 'Right')
-    win.onkeypress(goLeft, 'Left')
-    win.onkeypress(fast, '+')
-    win.onkeypress(slow, '-')
+    keyBindings()
 
     # Main game loop
     while True:
