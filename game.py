@@ -2,18 +2,20 @@ import turtle as tt
 import random as rd
 import time
 
-# Global variables
+# GLOBAL VARIABLES
+WINSIZE = 700
+FS = WINSIZE/2 - 100  # Frame size
+VPS = FS - 15  # Valid position for food and snake snake
+STYLE = ('Segoe UI', 20)
+TITLEFONT = 'Comic sans ms'
+BGPIC = 'images/bg.png'
+SNAKE_HEAD_COLOR = 'yellow'
+SNAKE_BODY_COLOR = 'orange'
+FOOD_COLOR = 'red'
 
-# set rate and delay
-rate = 5
-delay = 0.05
-
-winsize = 700
-fs = winsize/2 - 100  # frame size
-vps = fs - 15  # valid position for food and snake snake
-style = ('Segoe UI', 20)
-titlefont = 'Comic sans ms'
-
+# Set rate and delay
+RATE = 5
+DELAY = 0.05
 
 # Direction changing functions
 def goUp():
@@ -35,14 +37,16 @@ def goLeft():
 
 # Control speed
 def fast():
-    global rate
-    if (rate >= 30): return
-    rate += 0.5
+    global RATE
+    if RATE >= 30:
+        return
+    RATE += 0.5
 
 def slow():
-    global rate
-    if (rate <= 5): return
-    rate -= 0.5
+    global RATE
+    if RATE <= 5:
+        return
+    RATE -= 0.5
 
 
 # Function to control the snake's moves
@@ -60,9 +64,8 @@ def move(rate):
         x = snake.xcor()
         snake.setx(x - rate)
 
-
 # Function for welcome
-def welcomeScreen():
+def welcome_screen():
     pen = tt.Turtle()
     pen.speed(0)
     pen.hideturtle()
@@ -72,7 +75,7 @@ def welcomeScreen():
     pen.up()
     pen.goto(0, -r)
     pen.down()
-    # Total angle = 10 * 4 * 9 = 360 degree
+    # Total angle = 10 * 4 * 9 = 360 degrees
     for i in range(10):
         for j in range(4):
             if j % 2 == 0:
@@ -89,142 +92,146 @@ def welcomeScreen():
 
     pen.goto(0, 100)
     pen.color('white')
-    pen.write('WELCOME TO', font = ('Arial', 20), align = 'center')
+    pen.write('WELCOME TO', font=('Arial', 20), align='center')
 
     pen.goto(0, 0)
     pen.color('orange')
-    pen.write('H\'s Hungry ', font = (titlefont, 50, 'bold', 'italic'), align = 'center')
-    
+    pen.write('H\'s Hungry ', font=(TITLEFONT, 50, 'bold', 'italic'), align='center')
+
     pen.color('red')
     pen.goto(0, -80)
-    pen.write('Snake ', font = (titlefont, 60, 'bold', 'italic'), align = 'center')
+    pen.write('Snake ', font=(TITLEFONT, 60, 'bold', 'italic'), align='center')
 
     pen.goto(0, -170)
     pen.color('yellow')
-    pen.write('Please wait...\n', font = ('Arial', 20, 'italic'), align = 'center')
+    pen.write('Please wait...\n', font=('Arial', 20, 'italic'), align='center')
 
     pen.write(' ')
-    
+
     time.sleep(2)
     win.clearscreen()
 
-
-# To display scores
-def scoreboard(score, highScore):
-    board.clear()
-    board.color('lime')
-    board.goto(-fs + 100, fs + 30)
-    board.write(f"Score : {score}", align = 'center', font = style)
-
-    board.color('orange')
-    board.goto(fs - 120, fs + 30)
-    board.write(f"High Score : {highScore}", align = 'center', font = style)
-
-
-# Reset game bsed on conditions
-def gameReset(type):
-    global rate, delay
-
-    board.clear()
-    board.color('white')
-    board.goto(0, fs + 30)
-    if (type == 'boundary'):
-        board.write("Oops, boundary collision", align = 'center', font = style)
-    if (type == 'body'):
-        board.write("Oops, self collision", align = 'center', font = style)
-    win.update()
-    time.sleep(2)
-    board.clear()
-    board.color('red')
-    board.write("GAME OVER", align = 'center', font = style)
-    win.update()
-    time.sleep(2)
-
-    # Increase speed for next game
-    rate += 0.5
-
-    # Reset snake & score
-    snake.goto(0, 0)
-    snake.direction = 'stop'
-    score = 0
-    delay = 0.05
-
-    # Remove snake body
-    for body in snakebody:
-        body.goto(1000, 1000)  # Move body parts off the screen
-    snakebody.clear()
-    
-    # Move food at random position
-    food.goto(rd.randint(-vps, vps), rd.randint(-vps, vps))
-
-    # Update scoreboard
-    scoreboard(score, highScore)
-
-
-# Main function
-if __name__ == '__main__':
-    # set scores
-    score = 0
-    highScore = 0
-
-    # set up screen
-    win = tt.Screen()
-    win.title("H's Hungry snake")
-    win.setup(width = winsize, height = winsize)
-    win.bgpic("welcome.png")
-    win.tracer(2)
-
-    # welcome player
-    welcomeScreen()
-
-    # set up game screen
-    win.bgpic("welcome.png")
-    win.tracer(0)
-
-    # set up boundary and space for snake to move
+# Function to draw boundary
+def drawBoundary():
     frame = tt.Turtle()
     frame.pensize(4)
     frame.hideturtle()
     frame.up()
-    frame.goto(fs, -fs)
+    frame.goto(FS, -FS)
     frame.down()
     frame.fillcolor('black')
     frame.begin_fill()
     for i in range(4):
         frame.left(90)
-        # total length = 10 * (0.1 + 0.1) * fs = 2 * fs
+        # Total length = 10 * (0.1 + 0.1) * FS = 2 * FS
         for j in range(20):
             frame.pencolor('dodgerblue')
-            frame.forward(0.05 * fs)
+            frame.forward(0.05 * FS)
             frame.pencolor('black')
-            frame.forward(0.05 * fs)
+            frame.forward(0.05 * FS)
     frame.end_fill()
 
-    # set up scoreboard
+def drawFood():
+    food = snake.clone()
+    food.shapesize(0.7)
+    food.color(FOOD_COLOR)
+    food.up()
+    food.goto(rd.randint(-VPS, VPS), rd.randint(-VPS, VPS))
+
+# To display scores
+def scoreboard(score, high_score):
+    board.clear()
+    board.color('lime')
+    board.goto(-FS + 100, FS + 30)
+    board.write(f"Score : {score}", align='center', font=STYLE)
+
+    board.color('orange')
+    board.goto(FS - 120, FS + 30)
+    board.write(f"High Score : {high_score}", align='center', font=STYLE)
+
+# Reset game based on conditions
+def game_reset(type):
+    global RATE, DELAY
+
+    board.clear()
+    board.color('white')
+    board.goto(0, FS + 30)
+    if type == 'boundary':
+        board.write("Oops, boundary collision", align='center', font=STYLE)
+    if type == 'body':
+        board.write("Oops, self collision", align='center', font=STYLE)
+    win.update()
+    time.sleep(2)
+    board.clear()
+    board.color('red')
+    board.write("GAME OVER", align='center', font=STYLE)
+    win.update()
+    time.sleep(2)
+
+    # Increase speed for the next game
+    RATE += 0.5
+
+    # Reset snake and score
+    snake.goto(0, 0)
+    snake.direction = 'stop'
+    score = 0
+    DELAY = 0.05
+
+    # Remove snake body
+    for body in snake_body:
+        body.goto(1000, 1000)  # Move body parts off the screen
+    snake_body.clear()
+
+    # Move food to a random position
+    food.goto(rd.randint(-VPS, VPS), rd.randint(-VPS, VPS))
+
+    # Update scoreboard
+    scoreboard(score, high_score)
+
+# Main function
+if __name__ == '__main__':
+    # Set scores
+    score = 0
+    high_score = 0
+
+    # Set up screen
+    win = tt.Screen()
+    win.title("H's Hungry snake")
+    win.setup(width=WINSIZE, height=WINSIZE)
+    win.bgpic(BGPIC)
+    win.tracer(2)
+
+    # Welcome player
+    welcome_screen()
+
+    # Set up game screen
+    win.bgpic(BGPIC)
+    win.tracer(0)
+
+    # Set up boundary and space for the snake to move
+    drawBoundary()
+
+    # Set up scoreboard
     board = tt.Turtle()
     board.hideturtle()
     board.up()
-    scoreboard(score, highScore)
+    scoreboard(score, high_score)
 
-    # set up snake head
+    # Set up snake head
     snake = tt.Turtle()
     snake.shape('circle')
     snake.shapesize(1)
-    snake.color('yellow')
+    snake.color(SNAKE_HEAD_COLOR)
     snake.speed(0)
     snake.up()
-    snake.direction = "stop"  # initially snake is at rest
+    snake.direction = "stop"  # Initially, snake is at rest
 
-    snakebody = []  # to grow as food is consumed
+    snake_body = []  # To grow as food is consumed
 
-    # set up food
-    food = snake.clone()
-    food.shapesize(0.7)
-    food.color('red')
-    food.up()
-    food.goto(rd.randint(-vps, vps), rd.randint(-vps, vps))
+    # Set up food
+    drawFood()
 
-    # keyboard controls for snake
+    # Keyboard controls for the snake
     win.listen()
     win.onkeypress(goUp, 'Up')
     win.onkeypress(goDown, 'Down')
@@ -237,45 +244,45 @@ if __name__ == '__main__':
     while True:
         win.update()
 
-        # if snake collides with boundary
-        if (abs(snake.xcor()) > vps) or (abs(snake.ycor()) > vps):
-            gameReset('boundary')
+        # If snake collides with the boundary
+        if abs(snake.xcor()) > VPS or abs(snake.ycor()) > VPS:
+            game_reset('boundary')
 
-        # if snakebody collides with its head
-        for cell in snakebody:
+        # If snake body collides with its head
+        for cell in snake_body:
             if cell.distance(snake) < 5:
-                gameReset('body')
+                game_reset('body')
 
-        # if snake collides with food
+        # If snake collides with food
         if snake.distance(food) < 15:
-            # Move food at random position
-            food.goto(rd.randint(-vps, vps), rd.randint(-vps, vps))
+            # Move food to a random position
+            food.goto(rd.randint(-VPS, VPS), rd.randint(-VPS, VPS))
 
             # Grow snake body
-            newPart = snake.clone()
-            newPart.color('orange')
-            snakebody.append(newPart)
-            delay -= 0.001
+            new_part = snake.clone()
+            new_part.color(SNAKE_BODY_COLOR)
+            snake_body.append(new_part)
+            DELAY -= 0.001
 
             # Update score
             score += 50
-            highScore = max(highScore, score)
+            high_score = max(high_score, score)
 
             # Update scoreboard
-            scoreboard(score, highScore)
+            scoreboard(score, high_score)
 
         # Move the snake body
-        if len(snakebody) > 0:
+        if len(snake_body) > 0:
             # Move the last body part to the position of the second-to-last body part
-            for i in range(len(snakebody) - 1, 0, -1):
-                x = snakebody[i - 1].xcor()
-                y = snakebody[i - 1].ycor()
-                snakebody[i].goto(x, y)
+            for i in range(len(snake_body) - 1, 0, -1):
+                x = snake_body[i - 1].xcor()
+                y = snake_body[i - 1].ycor()
+                snake_body[i].goto(x, y)
 
             # Move the first body part to the position of the snake's head
             x = snake.xcor()
             y = snake.ycor()
-            snakebody[0].goto(x, y)
+            snake_body[0].goto(x, y)
 
-        move(rate)
-        time.sleep(delay)
+        move(RATE)
+        time.sleep(DELAY)
