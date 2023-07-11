@@ -191,6 +191,17 @@ def game_reset(type):
     # Update scoreboard
     scoreboard(score, high_score)
 
+# Function to check for collisions
+def checkCollisions():
+    # If snake collides with the boundary
+    if abs(snake.xcor()) > VPS or abs(snake.ycor()) > VPS:
+        game_reset('boundary')
+
+    # If snake body collides with its head
+    for cell in snake_body:
+        if cell.distance(snake) < 5:
+            game_reset('body')
+
 # Main function
 if __name__ == '__main__':
     # Set scores
@@ -245,14 +256,8 @@ if __name__ == '__main__':
     while True:
         win.update()
 
-        # If snake collides with the boundary
-        if abs(snake.xcor()) > VPS or abs(snake.ycor()) > VPS:
-            game_reset('boundary')
-
-        # If snake body collides with its head
-        for cell in snake_body:
-            if cell.distance(snake) < 5:
-                game_reset('body')
+        # Check for collisions
+        checkCollisions()
 
         # If snake collides with food
         if snake.distance(food) < 15:
