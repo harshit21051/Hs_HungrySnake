@@ -52,11 +52,10 @@ def slow():
         return
     RATE -= 0.5
 
-
 # Function to control the snake's moves
 def moveSnake():
     global RATE
-    
+
     # Move the body
     if len(snake_body) > 0:
         # Move the last body part to the position of the second-to-last body part
@@ -86,6 +85,17 @@ def moveSnake():
 
     # to control the speed of snake
     time.sleep(DELAY)
+
+# Function to call key bindings
+def keyBindings():
+    win.listen()
+    win.onkeypress(goUp, 'Up')
+    win.onkeypress(goDown, 'Down')
+    win.onkeypress(goRight, 'Right')
+    win.onkeypress(goLeft, 'Left')
+    win.onkeypress(fast, '+')
+    win.onkeypress(slow, '-')
+
 
 # Function for welcome
 def welcomeScreen():
@@ -154,17 +164,7 @@ def drawBoundary():
             frame.forward(0.05 * FS)
     frame.end_fill()
 
-# Function to call key bindings
-def keyBindings():
-    win.listen()
-    win.onkeypress(goUp, 'Up')
-    win.onkeypress(goDown, 'Down')
-    win.onkeypress(goRight, 'Right')
-    win.onkeypress(goLeft, 'Left')
-    win.onkeypress(fast, '+')
-    win.onkeypress(slow, '-')
-
-# To display scores
+# Function to display scores
 def scoreBoard():
     global SCORE, HIGHSCORE
     board.clear()
