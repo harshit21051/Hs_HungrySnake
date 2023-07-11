@@ -34,6 +34,6 @@ Hs_HungrySnake is a classical snake game built using Python and the Turtle libra
 - Game over screen with the final score displayed.
 
 ## Credits
-This game was created by Harshit Raj as a fun project. It is based on the classic snake game concept and utilizes the Turtle library for graphics and user input.
+This game is created by Harshit Raj as a fun project. It is based on the classic snake game concept and utilizes the Turtle library for graphics and user input.
 
 Happy gaming! 🐍🎮
